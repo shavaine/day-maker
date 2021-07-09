@@ -14,27 +14,27 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password, password)
 
-class Task(UserMixin, db.Model):
+class Task(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     title = db.Column(db.String(50), index = True)
 
-class Todo(UserMixin, db.Model):
+class Todo(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     notes = db.Column(db.String(200))
-    start_time = db.Column(db.Datetime)
-    end_time = db.Column(db.Datetime)
+    start_time = db.Column(db.DateTime, default=datetime.utcnow)
+    end_time = db.Column(db.DateTime)
     task_id = db.Column(db.Integer, db.ForeignKey('task.id'))
     template_id = db.Column(db.Integer, db.ForeignKey('template.id'))
 
-class Template(UserMixin, db.Model):
+class Template(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     todo_id = db.Column(db.Integer, db.ForeignKey('todo.id'))
     schedule_id = db.Column(db.Integer, db.ForeignKey('schedule.id'))
 
-class Schedule(UserMixin, db.Model):
+class Schedule(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     template_id = db.Column(db.Integer, db.ForeignKey('template.id'))
-    date = db.Column(db.Datetime, index = True)
+    date = db.Column(db.DateTime, index = True)
 
 @login_manager.user_loader
 def load_user(id):
