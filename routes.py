@@ -40,7 +40,7 @@ def register():
     if current_user.is_authenticated:
       return redirect(url_for('dashboard'))
     form = RegisterForm()
-    if 'username' in request.form:
+    if form.validate_on_submit():
       new_user = User(username=form.username.data, email=form.email.data)
       new_user.set_password(form.password.data)
       db.session.add(new_user)

@@ -1,17 +1,25 @@
 {% extends "base.html" %}
 {% block title %}Login{% endblock %}
 {% block content %}
-    <h2>Login</h2>
-    <form method="POST" action="/login">
-        {{ LoginForm.hidden_tag() }}
-        <p>
-            {{ LoginForm.username.label }}
-            {{ LoginForm.username() }}
-        </p>
-        <p>
-            {{ LoginForm.password.label }}
-            {{ LoginForm.password() }}
-        </p>
-        <p>{{ LoginForm.submit() }}</p>
-    </form>
+    <div class="container h-100 bg-light">
+        <div class="row justify-content-center align-items-center h-100">
+            <div class="col-5 bg-secondary my-auto py-4">
+                <form class="text-center" method="POST" action="/login">
+                    <h2 class="text-center text-white mb-3">Login</h2>
+                    {{ LoginForm.hidden_tag() }}
+                    <p class="text-white">
+                        {{ LoginForm.username.label }}
+                        {{ LoginForm.username() }}
+                    </p>
+                    <p class="text-white">
+                        {{ LoginForm.password.label }}
+                        {{ LoginForm.password() }}
+                    </p>
+                    <p>{{ LoginForm.submit() }}</p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    
 {% endblock %}
