@@ -1,7 +1,7 @@
 from app import app, db, login_manager
 from flask import render_template, request, redirect, url_for, flash
 from models import User, Task, Todo, Schedule, Template
-from forms import LoginForm, RegisterForm, TaskForm, EditTaskForm
+from forms import LoginForm, RegisterForm, TaskForm, EditTaskForm, TemplateForm, TodoForm
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
@@ -77,3 +77,40 @@ def edit_task(task_title):
       flash('Title successfully Changed')
       return redirect(url_for('tasks'))
     return render_template('edit_task.html', form=form, task_title=task_title)
+
+@app.route('/delete_task/<task_title>')
+@login_required
+def delete_task(task_title):
+    task = Task.query.filter_by(user_id=current_user.id, title=task_title).first()
+    db.session.delete(task)
+    db.session.commit()
+    flash(f'Task: {task.title}, has been successfully deleted')
+    return redirect(url_for('tasks'))     
+
+@app.route('/templates', methods=['GET', 'POST'])
+@login_required
+def templates():
+    form = TemplateForm()
+    if form.validate_on_submit():
+      template = Template(name=form.name.data, user_id=current_user.id)
+      db.session.add(template)
+      db.session.commit()
+      flash('Template successfully added')
+      return redirect(url_for('templates'))
+    return render_template('my_templates.html', form=form)
+
+@app.route('/view_template/<template>', methods=['GET', 'POST'])
+@login_required
+def view_template(template):
+    current_template = Template.query.filter_by(user_id=current_user.id, name=template).first()
+    form = TodoForm()
+    todos = Todo.query.filter_by(template_id=current_template.id).all()
+    form.task.choices = [(task.id, task.title) for task in Task.query.filter_by(user_id=current_user.id).all()]
+    if form.validate_on_submit():
+      todo = Todo(notes=form.notes.data, start_time=form.start_time.data, end_time=form.end_time.data, task_id=form.task.data, template_id=current_template.id)
+      db.session.add(todo)
+      db.session.commit()
+      flash('Todo successfully added')
+      return redirect(url_for('view_template', template=template))
+    return render_template('view_template.html', template=current_template, form=form, todos=todos)
+

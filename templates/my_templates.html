@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}Templates{% endblock %}
+{% block content %}
+    <div class="container h-100 bg-light">
+        <div class="row justify-content-center align-items-center h-25">
+            <div class="col-6 text-center">
+                <h1>{{current_user.username}}'s Templates</h1>
+            </div>
+        </div>
+        <div class="row justify-content-center align-items-center">
+            <div class="col-6 text-center">
+                <h1>Create Template</h1>
+                <form action="/templates" method="POST">
+                    {{ form.hidden_tag() }}
+                    <p>
+                        {{ form.name.label }}
+                        {{ form.name()}}
+                    </p>
+                    <p> {{ form.submit() }} </p>
+                </form>
+            </div>
+        </div>
+        <div class="row justify-content-center align-items-center">
+            <div class="col-6 text-center">
+                <h1>My Templates</h1>
+                {% for template in current_user.templates %}
+                <p class="fs-4">{{ template.name }}</h4>
+                <a href="{{ url_for('view_template', template=template.name) }}" class="btn btn-info">View</a>
+                <a href="{{ url_for('templates') }}" class="btn btn-secondary">Add Todo's</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

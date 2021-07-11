@@ -23,18 +23,20 @@ class Task(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     title = db.Column(db.String(50), index = True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-
+    todos = db.relationship('Todo', lazy='dynamic', cascade='all, delete, delete-orphan')
 
 class Todo(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     notes = db.Column(db.String(200))
-    start_time = db.Column(db.DateTime, default=datetime.utcnow)
-    end_time = db.Column(db.DateTime)
+    start_time = db.Column(db.Time)
+    end_time = db.Column(db.Time)
     task_id = db.Column(db.Integer, db.ForeignKey('task.id'))
     template_id = db.Column(db.Integer, db.ForeignKey('template.id'))
+    task = db.relationship('Task')
 
 class Template(db.Model):
     id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(25), index=True)
     todos = db.relationship('Todo', backref='template', lazy='dynamic', cascade='all, delete, delete-orphan')
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
