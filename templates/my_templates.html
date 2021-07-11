@@ -26,7 +26,6 @@
                 {% for template in current_user.templates %}
                 <p class="fs-4">{{ template.name }}</h4>
                 <a href="{{ url_for('view_template', template=template.name) }}" class="btn btn-info">View</a>
-                <a href="{{ url_for('templates') }}" class="btn btn-secondary">Add Todo's</a>
                 {% endfor %}
             </div>
         </div>

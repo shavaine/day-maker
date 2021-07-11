@@ -1,8 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, HiddenField, SelectField
+from wtforms import StringField, PasswordField, SubmitField, HiddenField, SelectField, TextAreaField
 from wtforms.fields.html5 import TimeField, DateField
 from wtforms.validators import DataRequired, Email, EqualTo
-from datetime import datetime
 
 class LoginForm(FlaskForm):
   username = StringField("Username", validators=[DataRequired()])
@@ -30,8 +29,8 @@ class TemplateForm(FlaskForm):
   submit = SubmitField("Create Template")
 
 class TodoForm(FlaskForm):
-  notes = StringField("Notes")
-  start_time = TimeField("Start Time", format='%H:%M', validators=[DataRequired()])
+  notes = TextAreaField("Notes")
+  start_time = TimeField("Start Time", validators=[DataRequired()])
   end_time = TimeField("End Time", validators=[DataRequired()])
   task = SelectField(u"Pick Task", coerce=int)
   submit = SubmitField("Add Todo")
@@ -40,3 +39,11 @@ class ScheduleForm(FlaskForm):
   date = DateField("Select Date", validators=[DataRequired()])
   template = SelectField(u"Pick Template", coerce=int)
   submit = SubmitField("Create Schedule")
+
+class EditTodoForm(FlaskForm):
+  id = HiddenField('id')
+  new_notes = TextAreaField("Notes")
+  new_start_time = TimeField("Start Time", validators=[DataRequired()])
+  new_end_time = TimeField("End Time", validators=[DataRequired()])
+  new_task = SelectField(u"Change Task", coerce=int)
+  submit = SubmitField("Submit Changes")

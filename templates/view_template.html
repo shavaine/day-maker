@@ -8,17 +8,13 @@
             </div>
         </div>
         <div class="row justify-content-center align-items-center mb-4">
-            <div class="col-6 text-center">
-                <h1>Add Todos</h1>
+            <div class="col-5 text-center">
+                <h4>Add Todos</h4>
                 <form action="/view_template/{{template.name}}" method="POST">
                     {{ form.hidden_tag() }}
                     <p>
                         {{ form.task.label }}
                         {{ form.task()}}
-                    </p>
-                    <p>
-                        {{ form.notes.label }}
-                        {{ form.notes()}}
                     </p>
                     <p>
                         {{ form.start_time.label }}
@@ -28,16 +24,23 @@
                         {{ form.end_time.label }}
                         {{ form.end_time()}}
                     </p>
+                    <p>
+                        {{ form.notes.label }}
+                        {{ form.notes()}}
+                    </p>
                     <p> {{ form.submit() }} </p>
                 </form>
             </div>
-        </div>
-        <div class="row justify-content-center align-items-center">
-            <div class="col-6 text-center">
+            <div class="col-5 text-center">
+                <h4>Current Todos</h4>
                 {% for todo in todos|sort(attribute='start_time') %}
-                <p class="fs-4">{{ todo.task.title }}: {{ todo.start_time.strftime("%H:%M") }} - {{ todo.end_time.strftime("%H:%M") }} </h4>  
+                <p class="fs-4">{{ todo.task.title }}: {{ todo.start_time.strftime("%H:%M") }} - {{ todo.end_time.strftime("%H:%M") }} </h4>
+                <a href="{{ url_for('edit_todo', todo_id=todo.id, todo=todo.task.title, template=template.name) }}" class="btn btn-secondary">edit</a>  
                 {% endfor %}
             </div>
+        </div>
+        <div class="row justify-content-center align-items-center">
+
         </div>
     </div>
 {% endblock %}

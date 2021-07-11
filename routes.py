@@ -2,7 +2,7 @@ from datetime import datetime
 from app import app, db, login_manager
 from flask import render_template, request, redirect, url_for, flash
 from models import User, Task, Todo, Schedule, Template
-from forms import LoginForm, RegisterForm, TaskForm, EditTaskForm, TemplateForm, TodoForm, ScheduleForm
+from forms import LoginForm, RegisterForm, TaskForm, EditTaskForm, TemplateForm, TodoForm, ScheduleForm, EditTodoForm
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
@@ -115,6 +115,24 @@ def view_template(template):
       return redirect(url_for('view_template', template=template))
     return render_template('view_template.html', template=current_template, form=form, todos=todos)
 
+@app.route('/edit_todo/<template>/<todo>/<todo_id>', methods=['GET', 'POST'])
+@login_required
+def edit_todo(todo, template, todo_id):
+    current_template = Template.query.filter_by(user_id=current_user.id, name=template).first()
+    old = Todo.query.filter_by(id=todo_id, template_id=current_template.id).first()
+    form = EditTodoForm(obj=old, new_notes=old.notes, new_start_time=old.start_time, new_end_time=old.end_time, new_task=old.task_id)
+    form.new_task.choices = [(task.id, task.title) for task in Task.query.filter_by(user_id=current_user.id).all()]
+    if form.validate_on_submit():
+      todo = Todo.query.filter_by(id=todo_id, template_id=current_template.id).first()
+      todo.notes = form.new_notes.data
+      todo.start_time = form.new_start_time.data
+      todo.end_time = form.new_end_time.data
+      todo.task_id = form.new_task.data
+      db.session.commit()
+      flash('Todo successfully updated')
+      return redirect(url_for('view_template', template=current_template.name))
+    return render_template('edit_todo.html', todo=todo, todo_id=todo_id, template=template, form=form)
+
 @app.route('/create_schedule', methods=['GET', 'POST'])
 @login_required
 def create_schedule():
@@ -132,6 +150,9 @@ def create_schedule():
 @login_required
 def schedule():
     schedule = Schedule.query.filter_by(date=datetime.today().strftime("%Y-%m-%d"), user_id=current_user.id).first()
+    if schedule is None:
+      flash('No Schedule set for today')
+      return redirect(url_for('dashboard'))
     current_template = Template.query.filter_by(id=schedule.template_id).first()
     todos = Todo.query.filter_by(template_id=current_template.id).all()
     return render_template('todays_schedule.html', todos=todos , template=current_template.name)

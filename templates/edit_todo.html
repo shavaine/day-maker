@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Tasks{% endblock %}
+{% block content %}
+    <div class="container h-100 bg-light">
+        <div class="row justify-content-center align-items-center h-25">
+            <div class="col-6 text-center">
+                <h1>{{todo}}</h1>
+            </div>
+        </div>
+        <div class="row justify-content-center align-items-center">
+            <div class="col-6 text-center">
+                <form action="/edit_todo/{{template}}/{{todo}}/{{todo_id}}" method="POST">
+                    {{ form.hidden_tag() }}
+                    <p> Edit </p>
+                    <p>
+                        {{ form.id(value=todo) }}
+                        {{ form.new_task.label }}
+                        {{ form.new_task() }}
+                    </p>
+                    <p>
+                        {{ form.new_start_time.label }}
+                        {{ form.new_start_time() }}
+                    </p>
+                    <p>
+                        {{ form.new_end_time.label }}
+                        {{ form.new_end_time() }}
+                    </p>
+                    <p>
+                        {{ form.new_notes.label }}
+                        {{ form.new_notes() }}
+                    </p>
+                    <p> {{ form.submit() }} </p>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
