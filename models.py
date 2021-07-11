@@ -42,9 +42,10 @@ class Template(db.Model):
 
 class Schedule(db.Model):
     id = db.Column(db.Integer, primary_key = True)
-    date = db.Column(db.DateTime, index = True)
+    date = db.Column(db.Date, index = True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     template_id = db.Column(db.Integer, db.ForeignKey('template.id'))
+    template = db.relationship('Template')
     
 
 @login_manager.user_loader

@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, HiddenField, SelectField
-from wtforms.fields.html5 import TimeField
+from wtforms.fields.html5 import TimeField, DateField
 from wtforms.validators import DataRequired, Email, EqualTo
 from datetime import datetime
 
@@ -35,3 +35,8 @@ class TodoForm(FlaskForm):
   end_time = TimeField("End Time", validators=[DataRequired()])
   task = SelectField(u"Pick Task", coerce=int)
   submit = SubmitField("Add Todo")
+
+class ScheduleForm(FlaskForm):
+  date = DateField("Select Date", validators=[DataRequired()])
+  template = SelectField(u"Pick Template", coerce=int)
+  submit = SubmitField("Create Schedule")

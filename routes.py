@@ -1,7 +1,8 @@
+from datetime import datetime
 from app import app, db, login_manager
 from flask import render_template, request, redirect, url_for, flash
 from models import User, Task, Todo, Schedule, Template
-from forms import LoginForm, RegisterForm, TaskForm, EditTaskForm, TemplateForm, TodoForm
+from forms import LoginForm, RegisterForm, TaskForm, EditTaskForm, TemplateForm, TodoForm, ScheduleForm
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
@@ -103,8 +104,8 @@ def templates():
 @login_required
 def view_template(template):
     current_template = Template.query.filter_by(user_id=current_user.id, name=template).first()
-    form = TodoForm()
     todos = Todo.query.filter_by(template_id=current_template.id).all()
+    form = TodoForm()
     form.task.choices = [(task.id, task.title) for task in Task.query.filter_by(user_id=current_user.id).all()]
     if form.validate_on_submit():
       todo = Todo(notes=form.notes.data, start_time=form.start_time.data, end_time=form.end_time.data, task_id=form.task.data, template_id=current_template.id)
@@ -114,3 +115,23 @@ def view_template(template):
       return redirect(url_for('view_template', template=template))
     return render_template('view_template.html', template=current_template, form=form, todos=todos)
 
+@app.route('/create_schedule', methods=['GET', 'POST'])
+@login_required
+def create_schedule():
+    form = ScheduleForm()
+    form.template.choices = [(template.id, template.name) for template in Template.query.filter_by(user_id=current_user.id).all()]
+    if form.validate_on_submit():
+      schedule = Schedule(date=form.date.data, template_id=form.template.data, user_id=current_user.id)
+      db.session.add(schedule)
+      db.session.commit()
+      flash('Schedule successfully created')
+      return redirect(url_for('dashboard'))
+    return render_template('create_schedule.html', form=form)
+
+@app.route('/schedule')
+@login_required
+def schedule():
+    schedule = Schedule.query.filter_by(date=datetime.today().strftime("%Y-%m-%d"), user_id=current_user.id).first()
+    current_template = Template.query.filter_by(id=schedule.template_id).first()
+    todos = Todo.query.filter_by(template_id=current_template.id).all()
+    return render_template('todays_schedule.html', todos=todos , template=current_template.name)

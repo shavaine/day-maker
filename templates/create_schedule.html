@@ -1,43 +1,34 @@
 {% extends 'base.html' %}
-{% block title %}{{template.name}} - Template{% endblock %}
+{% block title %}Create Schedule{% endblock %}
 {% block content %}
     <div class="container h-100 bg-light">
         <div class="row justify-content-center align-items-center h-25">
             <div class="col-6 text-center">
-                <h1>{{template.name}}</h1>
+                <h1>Create Schedule</h1>
             </div>
         </div>
         <div class="row justify-content-center align-items-center mb-4">
             <div class="col-6 text-center">
-                <h1>Add Todos</h1>
-                <form action="/view_template/{{template.name}}" method="POST">
+                <form action="/create_schedule" method="POST">
                     {{ form.hidden_tag() }}
                     <p>
-                        {{ form.task.label }}
-                        {{ form.task()}}
+                        {{ form.date.label }}
+                        {{ form.date()}}
                     </p>
                     <p>
-                        {{ form.notes.label }}
-                        {{ form.notes()}}
-                    </p>
-                    <p>
-                        {{ form.start_time.label }}
-                        {{ form.start_time()}}
-                    </p>
-                    <p>
-                        {{ form.end_time.label }}
-                        {{ form.end_time()}}
+                        {{ form.template.label }}
+                        {{ form.template()}}
                     </p>
                     <p> {{ form.submit() }} </p>
                 </form>
             </div>
         </div>
-        <div class="row justify-content-center align-items-center">
+        <!-- <div class="row justify-content-center align-items-center">
             <div class="col-6 text-center">
                 {% for todo in todos|sort(attribute='start_time') %}
                 <p class="fs-4">{{ todo.task.title }}: {{ todo.start_time.strftime("%H:%M") }} - {{ todo.end_time.strftime("%H:%M") }} </h4>  
                 {% endfor %}
             </div>
-        </div>
+        </div> -->
     </div>
 {% endblock %}

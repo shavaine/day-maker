@@ -12,7 +12,7 @@
                 <div class="card text-center" style="width: 18rem;">
                     <div class="card-body">
                         <h5 class="card-title">Schedule</h5>
-                        <a href="#" class="btn btn-primary stretched-link">View</a>
+                        <a href="{{ url_for('schedule')}}" class="btn btn-primary stretched-link">View</a>
                     </div>
                 </div>
             </div>
@@ -29,6 +29,16 @@
                     <div class="card-body">
                       <h5 class="card-title">Tasks</h5>
                       <a href="{{ url_for('tasks')}}" class="btn btn-primary stretched-link">View</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center align-items-center mt-4">
+            <div class="col-9">
+                <div class="card text-center" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Add Schedule</h5>
+                        <a href="{{ url_for('create_schedule')}}" class="btn btn-primary stretched-link">Create</a>
                     </div>
                 </div>
             </div>
