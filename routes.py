@@ -1,7 +1,7 @@
 from app import app, db, login_manager
 from flask import render_template, request, redirect, url_for, flash
 from models import User, Task, Todo, Schedule, Template
-from forms import LoginForm, RegisterForm
+from forms import LoginForm, RegisterForm, TaskForm, EditTaskForm
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
@@ -53,3 +53,27 @@ def register():
 @login_required
 def dashboard():
     return render_template('dashboard.html')
+
+@app.route('/tasks', methods=['GET', 'POST'])
+@login_required
+def tasks():
+    form = TaskForm()
+    if form.validate_on_submit():
+      task = Task(title=form.title.data, user_id=current_user.id)
+      db.session.add(task)
+      db.session.commit()
+      flash('Title successfully added')
+      return redirect(url_for('tasks'))
+    return render_template('view_tasks.html', form=form)
+
+@app.route('/edit_task/<task_title>', methods=['GET', 'POST'])
+@login_required
+def edit_task(task_title):
+    form = EditTaskForm()
+    if form.validate_on_submit():
+      task = Task.query.filter_by(user_id=current_user.id, title=task_title).first()
+      task.title = form.new_title.data
+      db.session.commit()
+      flash('Title successfully Changed')
+      return redirect(url_for('tasks'))
+    return render_template('edit_task.html', form=form, task_title=task_title)

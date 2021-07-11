@@ -1,5 +1,37 @@
 {% extends "base.html" %}
 {% block title %}Dashboard{% endblock %}
 {% block content %}
- <h1>{{current_user.username}}'s Dashboard</h1>
+    <div class="container h-100 bg-light">
+        <div class="row justify-content-center align-items-center h-25">
+            <div class="col-6 text-center">
+                <h1>{{current_user.username}}'s Dashboard</h1>
+            </div>
+        </div>
+        <div class="row justify-content-center align-items-center">
+            <div class="col-3">
+                <div class="card text-center" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Schedule</h5>
+                        <a href="#" class="btn btn-primary stretched-link">View</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="card text-center" style="width: 18rem;">
+                    <div class="card-body">
+                      <h5 class="card-title">Templates</h5>
+                      <a href="#" class="btn btn-primary stretched-link">View</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="card text-center" style="width: 18rem;">
+                    <div class="card-body">
+                      <h5 class="card-title">Tasks</h5>
+                      <a href="{{ url_for('tasks')}}" class="btn btn-primary stretched-link">View</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

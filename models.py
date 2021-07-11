@@ -1,3 +1,4 @@
+from sqlalchemy.orm import backref
 from app import  db, login_manager
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -8,6 +9,9 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(30), unique = True, index = True)
     email = db.Column(db.String(64), index=True, unique=True)
     password = db.Column(db.String(128))
+    schedules = db.relationship('Schedule', backref='user', lazy='dynamic', cascade='all, delete, delete-orphan')
+    templates = db.relationship('Template', backref='user', lazy='dynamic', cascade='all, delete, delete-orphan')
+    tasks = db.relationship('Task', backref='user', lazy='dynamic', cascade='all, delete, delete-orphan')
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -18,6 +22,8 @@ class User(UserMixin, db.Model):
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     title = db.Column(db.String(50), index = True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
 
 class Todo(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -29,13 +35,15 @@ class Todo(db.Model):
 
 class Template(db.Model):
     id = db.Column(db.Integer, primary_key = True)
-    todo_id = db.Column(db.Integer, db.ForeignKey('todo.id'))
-    schedule_id = db.Column(db.Integer, db.ForeignKey('schedule.id'))
+    todos = db.relationship('Todo', backref='template', lazy='dynamic', cascade='all, delete, delete-orphan')
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 class Schedule(db.Model):
     id = db.Column(db.Integer, primary_key = True)
-    template_id = db.Column(db.Integer, db.ForeignKey('template.id'))
     date = db.Column(db.DateTime, index = True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    template_id = db.Column(db.Integer, db.ForeignKey('template.id'))
+    
 
 @login_manager.user_loader
 def load_user(id):

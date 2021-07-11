@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Tasks{% endblock %}
+{% block content %}
+    <div class="container h-100 bg-light">
+        <div class="row justify-content-center align-items-center h-25">
+            <div class="col-6 text-center">
+                <h1>{{current_user.username}}'s Tasks</h1>
+            </div>
+        </div>
+        <div class="row justify-content-center align-items-center">
+            <div class="col-6 text-center">
+                <h1>Add Tasks</h1>
+                <form action="/tasks" method="POST">
+                    {{ form.hidden_tag() }}
+                    <p>
+                        {{ form.title.label }}
+                        {{ form.title()}}
+                    </p>
+                    <p> {{ form.submit() }} </p>
+                </form>
+            </div>
+        </div>
+        <div class="row justify-content-center align-items-center">
+            <div class="col-6 text-center">
+                <h1>My Tasks</h1>
+                {% for task in current_user.tasks %}
+                <p class="fs-4">{{ task.title }}</h4>
+                <a href="{{ url_for('edit_task', task_title=task.title) }}" class="btn btn-primary">Edit</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
