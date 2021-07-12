@@ -101,9 +101,16 @@ def templates():
       return redirect(url_for('templates'))
     return render_template('templates.html', form=form)
 
-@app.route('/view_template/<template>', methods=['GET', 'POST'])
+@app.route('/view_template/<template>')
 @login_required
 def view_template(template):
+    current_template = Template.query.filter_by(user_id=current_user.id, name=template).first()
+    todos = Todo.query.filter_by(template_id=current_template.id).all()
+    return render_template('view_template.html', template=template, todos=todos)
+
+@app.route('/edit_template/<template>', methods=['GET', 'POST'])
+@login_required
+def edit_template(template):
     current_template = Template.query.filter_by(user_id=current_user.id, name=template).first()
     todos = Todo.query.filter_by(template_id=current_template.id).all()
     form = TodoForm()
@@ -113,8 +120,8 @@ def view_template(template):
       db.session.add(todo)
       db.session.commit()
       flash('Todo successfully added')
-      return redirect(url_for('view_template', template=template))
-    return render_template('view_template.html', template=current_template, form=form, todos=todos)
+      return redirect(url_for('edit_template', template=template))
+    return render_template('edit_template.html', template=current_template, form=form, todos=todos)
 
 @app.route('/delete_template/<template>')
 @login_required
@@ -173,5 +180,5 @@ def schedule():
 @app.route('/calender', methods=['GET', 'POST'])
 def calender():
     schedules = Schedule.query.filter_by(user_id=current_user.id).all()
-    schedules_list = [{'title': Template.query.filter_by(id=schedule.template_id).first().name, 'start': str(schedule.date)} for schedule in schedules]
+    schedules_list = [{'title': Template.query.filter_by(id=schedule.template_id).first().name, 'start': str(schedule.date), 'url': url_for('view_template', template=Template.query.filter_by(id=schedule.template_id).first().name)} for schedule in schedules]
     return render_template('calendar.html', date=datetime.today(), schedules=json.dumps([schedule for schedule in schedules_list]), tasks=Task.query.all(), dates=schedules_list)

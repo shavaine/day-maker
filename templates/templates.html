@@ -23,7 +23,8 @@
                 <h4>My Templates</h4>
                 {% for template in current_user.templates %}
                 <p class="fs-4">{{ template.name }}</h4>
-                <a href="{{ url_for('view_template', template=template.name) }}" class="btn btn-info">View</a>
+                <a href="{{ url_for('view_template', template=template.name) }}" class="btn btn-primary">View</a>
+                <a href="{{ url_for('edit_template', template=template.name) }}" class="btn btn-info">Edit</a>
                 <a href="{{ url_for('delete_template', template=template.name) }}" class="btn btn-danger">Delete</a>
                 {% endfor %}
             </div>
