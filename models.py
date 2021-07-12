@@ -32,7 +32,7 @@ class Todo(db.Model):
     end_time = db.Column(db.Time)
     task_id = db.Column(db.Integer, db.ForeignKey('task.id'))
     template_id = db.Column(db.Integer, db.ForeignKey('template.id'))
-    task = db.relationship('Task')
+    task = db.relationship('Task', overlaps="todos")
 
 class Template(db.Model):
     id = db.Column(db.Integer, primary_key = True)

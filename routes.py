@@ -163,6 +163,15 @@ def create_schedule():
       return redirect(url_for('dashboard'))
     return render_template('create_schedule.html', form=form)
 
+@app.route('/delete_schedule/<schedule>')
+@login_required
+def delete_schedule(schedule):
+    schedule = Schedule.query.filter_by(user_id=current_user.id, id=schedule).first()
+    db.session.delete(schedule)
+    db.session.commit()
+    flash('Schedule successfully deleted')
+    return redirect(url_for('dashboard'))
+
 @app.route('/schedule')
 @login_required
 def schedule():
@@ -171,14 +180,20 @@ def schedule():
       flash('No Schedule set for today')
       return redirect(url_for('dashboard'))
     current_template = Template.query.filter_by(id=schedule.template_id).first()
-    if current_template is None:
-      flash('Template Error')
-      return redirect(url_for('dashboard'))
-    todos = Todo.query.filter_by(template_id=current_template.id).all()
-    return render_template('todays_schedule.html', todos=todos , template=current_template.name)
+    todos = Todo.query.filter_by(template_id=schedule.template_id).all()
+    schedules_list = [{'title': todo.task.title, 'start': str(schedule.date)+'T'+str(todo.start_time), 'end': str(schedule.date)+'T'+str(todo.end_time), 'url': url_for('day_view', schedule=schedule.id, template=Template.query.filter_by(id=schedule.template_id).first().name)} for todo in todos]
+    return render_template('todays_schedule.html', date=schedule.date, schedules=json.dumps([schedule for schedule in schedules_list]), todos=todos,  template=current_template.name)
 
 @app.route('/calender', methods=['GET', 'POST'])
 def calender():
     schedules = Schedule.query.filter_by(user_id=current_user.id).all()
-    schedules_list = [{'title': Template.query.filter_by(id=schedule.template_id).first().name, 'start': str(schedule.date), 'url': url_for('view_template', template=Template.query.filter_by(id=schedule.template_id).first().name)} for schedule in schedules]
-    return render_template('calendar.html', date=datetime.today(), schedules=json.dumps([schedule for schedule in schedules_list]), tasks=Task.query.all(), dates=schedules_list)
+    schedules_list = [{'title': Template.query.filter_by(id=schedule.template_id).first().name, 'start': str(schedule.date), 'url': url_for('day_view', schedule=schedule.id, template=Template.query.filter_by(id=schedule.template_id).first().name)} for schedule in schedules]
+    return render_template('calendar.html', date=datetime.today(), schedules=json.dumps([schedule for schedule in schedules_list]))
+
+@app.route('/day_view/<schedule>')
+@login_required
+def day_view(schedule):
+    current_schedule = Schedule.query.filter_by(user_id=current_user.id, id=schedule).first()
+    todos = Todo.query.filter_by(template_id=current_schedule.template_id).all()
+    schedules_list = [{'title': todo.task.title, 'start': str(current_schedule.date)+'T'+str(todo.start_time), 'end': str(current_schedule.date)+'T'+str(todo.end_time), 'url': url_for('day_view', schedule=current_schedule.id, template=Template.query.filter_by(id=current_schedule.template_id).first().name)} for todo in todos]
+    return render_template('day_view.html', date=current_schedule.date, schedules=json.dumps([schedule for schedule in schedules_list]), todos=todos)
