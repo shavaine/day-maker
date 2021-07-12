@@ -8,8 +8,8 @@
             </div>
         </div>
         <div class="row justify-content-center align-items-center mb-4">
-            <div class="col-6 text-center">
-                <h1>Add Tasks</h1>
+            <div class="col-5 text-center">
+                <h4>Add Tasks</h4>
                 <form action="/tasks" method="POST">
                     {{ form.hidden_tag() }}
                     <p>
@@ -19,10 +19,8 @@
                     <p> {{ form.submit() }} </p>
                 </form>
             </div>
-        </div>
-        <div class="row justify-content-center align-items-center">
-            <div class="col-6 text-center">
-                <h1>My Tasks</h1>
+            <div class="col-5 text-center">
+                <h4>My Tasks</h4>
                 {% for task in current_user.tasks %}
                 <p class="fs-4">{{ task.title }}</h4>
                 <a href="{{ url_for('edit_task', task_title=task.title) }}" class="btn btn-info">Edit</a>

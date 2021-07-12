@@ -38,6 +38,7 @@ class Template(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(25), index=True)
     todos = db.relationship('Todo', backref='template', lazy='dynamic', cascade='all, delete, delete-orphan')
+    schedules = db.relationship('Schedule', backref='template', lazy='dynamic', cascade='all, delete, delete-orphan')
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 class Schedule(db.Model):
@@ -45,7 +46,7 @@ class Schedule(db.Model):
     date = db.Column(db.Date, index = True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     template_id = db.Column(db.Integer, db.ForeignKey('template.id'))
-    template = db.relationship('Template')
+    
     
 
 @login_manager.user_loader

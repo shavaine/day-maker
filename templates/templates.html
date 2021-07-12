@@ -8,8 +8,8 @@
             </div>
         </div>
         <div class="row justify-content-center align-items-center">
-            <div class="col-6 text-center">
-                <h1>Create Template</h1>
+            <div class="col-5 text-center">
+                <h4>Create Template</h4>
                 <form action="/templates" method="POST">
                     {{ form.hidden_tag() }}
                     <p>
@@ -19,15 +19,17 @@
                     <p> {{ form.submit() }} </p>
                 </form>
             </div>
-        </div>
-        <div class="row justify-content-center align-items-center">
-            <div class="col-6 text-center">
-                <h1>My Templates</h1>
+            <div class="col-5 text-center">
+                <h4>My Templates</h4>
                 {% for template in current_user.templates %}
                 <p class="fs-4">{{ template.name }}</h4>
                 <a href="{{ url_for('view_template', template=template.name) }}" class="btn btn-info">View</a>
+                <a href="{{ url_for('delete_template', template=template.name) }}" class="btn btn-danger">Delete</a>
                 {% endfor %}
             </div>
+        </div>
+        <div class="row justify-content-center align-items-center">
+
         </div>
     </div>
 {% endblock %}

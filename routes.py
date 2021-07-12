@@ -5,6 +5,7 @@ from models import User, Task, Todo, Schedule, Template
 from forms import LoginForm, RegisterForm, TaskForm, EditTaskForm, TemplateForm, TodoForm, ScheduleForm, EditTodoForm
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
+import json
 
 @login_manager.user_loader
 def load_user(id):
@@ -98,7 +99,7 @@ def templates():
       db.session.commit()
       flash('Template successfully added')
       return redirect(url_for('templates'))
-    return render_template('my_templates.html', form=form)
+    return render_template('templates.html', form=form)
 
 @app.route('/view_template/<template>', methods=['GET', 'POST'])
 @login_required
@@ -114,6 +115,15 @@ def view_template(template):
       flash('Todo successfully added')
       return redirect(url_for('view_template', template=template))
     return render_template('view_template.html', template=current_template, form=form, todos=todos)
+
+@app.route('/delete_template/<template>')
+@login_required
+def delete_template(template):
+    template = Template.query.filter_by(user_id=current_user.id, name=template).first()
+    db.session.delete(template)
+    db.session.commit()
+    flash('Template successfully deleted')
+    return redirect(url_for('templates'))
 
 @app.route('/edit_todo/<template>/<todo>/<todo_id>', methods=['GET', 'POST'])
 @login_required
@@ -154,5 +164,14 @@ def schedule():
       flash('No Schedule set for today')
       return redirect(url_for('dashboard'))
     current_template = Template.query.filter_by(id=schedule.template_id).first()
+    if current_template is None:
+      flash('Template Error')
+      return redirect(url_for('dashboard'))
     todos = Todo.query.filter_by(template_id=current_template.id).all()
     return render_template('todays_schedule.html', todos=todos , template=current_template.name)
+
+@app.route('/calender', methods=['GET', 'POST'])
+def calender():
+    schedules = Schedule.query.filter_by(user_id=current_user.id).all()
+    schedules_list = [{'title': Template.query.filter_by(id=schedule.template_id).first().name, 'start': str(schedule.date)} for schedule in schedules]
+    return render_template('calendar.html', date=datetime.today(), schedules=json.dumps([schedule for schedule in schedules_list]), tasks=Task.query.all(), dates=schedules_list)

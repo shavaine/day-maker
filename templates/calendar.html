@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block head %}
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+<link rel="stylesheet" href="../static/styles.css">
+<link href='../static/lib/main.css' rel='stylesheet' />
+<script src='../static/lib/main.js'></script>
+<script>
+  var events = {{ schedules|safe }}
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+      },
+      initialDate: '{{date}}',
+      editable: true,
+      selectable: true,
+      businessHours: true,
+      dayMaxEvents: true,
+      events: events,
+    });
+
+    calendar.render();
+  });
+
+</script>
+<style>
+
+  body {
+    margin: 40px 10px;
+    padding: 0;
+    font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+    font-size: 14px;
+  }
+
+  #calendar {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  a {
+    text-decoration: none;
+    color: black;
+  }
+
+</style>
+{% endblock %}
+{% block content %}
+    <div class="container  bg-light">
+        <div class="row justify-content-center align-items-center h-25">
+            <div class="col-6 text-center">
+                <h1>{{current_user.username}}'s Calender</h1>
+            </div>
+        </div>
+        <div class="row justify-content-center align-items-center h-75">
+            <div class="col-12">
+                <div id='calendar'></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
