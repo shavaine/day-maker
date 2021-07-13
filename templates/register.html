@@ -1,30 +1,38 @@
 {% extends "base.html" %}
 {% block title %}Register{% endblock %}
 {% block content %}
-    <div class="container h-100 bg-light">
-        <div class="row justify-content-center align-items-center h-100">
-            <div class="col-5 bg-secondary my-auto py-4">
-                <form class="text-center" method="POST" action="/register">
-                    <h2 class="text-center text-white mb-3">Register</h2>
-                    {{ RegisterForm.hidden_tag() }}
-                    <p class="text-white">
-                        {{ RegisterForm.username.label }}
-                        {{ RegisterForm.username() }}
-                    </p>
-                    <p class="text-white">
-                        {{ RegisterForm.password.label }}
-                        {{ RegisterForm.password() }}
-                    </p>
-                    <p class="text-white">
-                        {{ RegisterForm.password_repeat.label }}
-                        {{ RegisterForm.password_repeat() }}
-                    </p>
-                    <p class="text-white">
-                        {{ RegisterForm.email.label }}
-                        {{ RegisterForm.email() }}
-                    </p>
-                    <p>{{ RegisterForm.submit() }}</p>
-                </form>
+    <div class="container h-50">
+        <div class="row justify-content-center align-items-center h-50">
+            <div class="col-6 text-center text-white">
+                <h1>Register</h1>
+            </div>
+        </div>
+        <div class="row justify-content-center h-25">
+            <div class="col-5 day-primary py-4 curved">
+                <div class="row justify-content-center">
+                    <div class="col-10">
+                        <form class="" method="POST" action="/register">
+                            {{ RegisterForm.hidden_tag() }}
+                            <div class="mb-3">
+                                <label for="exampleInputEmail1" class="form-label text-white">{{ RegisterForm.username.label }}</label>
+                                {{ RegisterForm.username(type="input", class="form-control") }}
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleInputEmail1" class="form-label text-white">{{ RegisterForm.password.label }}</label>
+                                {{ RegisterForm.password(type="password", class="form-control") }}
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleInputEmail1" class="form-label text-white">{{ RegisterForm.password_repeat.label }}</label>
+                                {{ RegisterForm.password_repeat(type="password", class="form-control") }}
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleInputEmail1" class="form-label text-white">{{ RegisterForm.email.label }}</label>
+                                {{ RegisterForm.email(type="email", class="form-control") }}
+                            </div>
+                            <div>{{ RegisterForm.submit(class="btn btn-primary") }}</div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

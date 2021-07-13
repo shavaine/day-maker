@@ -54,7 +54,9 @@ def register():
 @app.route('/dashboard', methods=['GET','POST'])
 @login_required
 def dashboard():
-    return render_template('dashboard.html')
+    schedules = Schedule.query.filter_by(user_id=current_user.id).all()
+    schedules_list = [{'title': Template.query.filter_by(id=schedule.template_id).first().name, 'start': str(schedule.date), 'url': url_for('day_view', schedule=schedule.id, template=Template.query.filter_by(id=schedule.template_id).first().name)} for schedule in schedules]
+    return render_template('calendar.html', date=datetime.today(), schedules=json.dumps([schedule for schedule in schedules_list]))
 
 @app.route('/tasks', methods=['GET', 'POST'])
 @login_required
@@ -183,12 +185,6 @@ def schedule():
     todos = Todo.query.filter_by(template_id=schedule.template_id).all()
     schedules_list = [{'title': todo.task.title, 'start': str(schedule.date)+'T'+str(todo.start_time), 'end': str(schedule.date)+'T'+str(todo.end_time), 'url': url_for('day_view', schedule=schedule.id, template=Template.query.filter_by(id=schedule.template_id).first().name)} for todo in todos]
     return render_template('todays_schedule.html', date=schedule.date, schedules=json.dumps([schedule for schedule in schedules_list]), todos=todos,  template=current_template.name)
-
-@app.route('/calender', methods=['GET', 'POST'])
-def calender():
-    schedules = Schedule.query.filter_by(user_id=current_user.id).all()
-    schedules_list = [{'title': Template.query.filter_by(id=schedule.template_id).first().name, 'start': str(schedule.date), 'url': url_for('day_view', schedule=schedule.id, template=Template.query.filter_by(id=schedule.template_id).first().name)} for schedule in schedules]
-    return render_template('calendar.html', date=datetime.today(), schedules=json.dumps([schedule for schedule in schedules_list]))
 
 @app.route('/day_view/<schedule>')
 @login_required
