@@ -11,14 +11,14 @@
             <div class="col-5 day-primary py-4 curved">
                 <div class="row justify-content-center">
                     <div class="col-10">
-                        <form class="" method="POST" action="/login">
+                        <form method="POST" action="/login">
                             {{ LoginForm.hidden_tag() }}
                             <div class="mb-3">
-                                <label for="exampleInputEmail1" class="form-label text-white">{{ LoginForm.username.label }}</label>
+                                <label class="form-label text-white">{{ LoginForm.username.label }}</label>
                                 {{ LoginForm.username(type="input", class="form-control") }}
                             </div>
                             <div class="mb-3">
-                                <label for="exampleInputEmail1" class="form-label text-white">{{ LoginForm.password.label }}</label>
+                                <label class="form-label text-white">{{ LoginForm.password.label }}</label>
                                 {{ LoginForm.password(type="password", class="form-control") }}
                             </div>
                             <div>{{ LoginForm.submit(class="btn btn-primary") }}</div>

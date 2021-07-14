@@ -62,25 +62,26 @@ def dashboard():
 @login_required
 def tasks():
     form = TaskForm()
+    EditForm = EditTaskForm()
     if form.validate_on_submit():
       task = Task(title=form.title.data, user_id=current_user.id)
       db.session.add(task)
       db.session.commit()
-      flash('Title successfully added')
+      flash('Task successfully added')
       return redirect(url_for('tasks'))
-    return render_template('view_tasks.html', form=form)
+    return render_template('view_tasks.html', form=form, EditForm=EditForm)
 
 @app.route('/edit_task/<task_title>', methods=['GET', 'POST'])
 @login_required
 def edit_task(task_title):
-    form = EditTaskForm()
-    if form.validate_on_submit():
+    EditForm = EditTaskForm()
+    if EditForm.validate_on_submit():
       task = Task.query.filter_by(user_id=current_user.id, title=task_title).first()
-      task.title = form.new_title.data
+      task.title = EditForm.new_title.data
       db.session.commit()
       flash('Title successfully Changed')
       return redirect(url_for('tasks'))
-    return render_template('edit_task.html', form=form, task_title=task_title)
+    return render_template('edit_task.html', Edit=EditForm, task_title=task_title)
 
 @app.route('/delete_task/<task_title>')
 @login_required

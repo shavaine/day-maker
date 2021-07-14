@@ -1,44 +1,12 @@
 {% extends 'base.html' %}
 {% block title %}Templates{% endblock %}
 {% block content %}
-    <!-- <div class="container h-100 bg-light">
-        <div class="row justify-content-center align-items-center h-25">
-            <div class="col-6 text-center">
-                <h1>{{current_user.username}}'s Templates</h1>
-            </div>
-        </div>
-        <div class="row justify-content-center align-items-center">
-            <div class="col-5 text-center">
-                <h4>Create Template</h4>
-                <form action="/templates" method="POST">
-                    {{ form.hidden_tag() }}
-                    <p>
-                        {{ form.name.label }}
-                        {{ form.name()}}
-                    </p>
-                    <p> {{ form.submit() }} </p>
-                </form>
-            </div>
-            <div class="col-5 text-center">
-                <h4>My Templates</h4>
-                {% for template in current_user.templates %}
-                <p class="fs-4">{{ template.name }}</h4>
-                <a href="{{ url_for('view_template', template=template.name) }}" class="btn btn-primary">View</a>
-                <a href="{{ url_for('edit_template', template=template.name) }}" class="btn btn-info">Edit</a>
-                <a href="{{ url_for('delete_template', template=template.name) }}" class="btn btn-danger">Delete</a>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="row justify-content-center align-items-center">
-
-        </div>
-    </div> -->
     <div class="container h-100">
         <div class="row justify-content-center mt-4">
             <div class="col-3 text-white  day-primary curved">
-                <h2 class="mt-2 text-center">Schedule</h2>
+                <h2 class="mt-2 text-center">Templates</h2>
                 <h4 class="mt-2 text-center">{{current_user.username}}</h2>
-                <div class="row gap-1 justify-content-center">
+                <div class="row gap-1 justify-content-center pb-4">
                   <div class="col-10">
                     <h4 class="mt-4"><a href="{{ url_for('dashboard')}}" class="btn btn-outline-light w-100"><i class="bi bi-layout-text-window-reverse"></i> Dashboard</a></h4>
                     <h4 class="mt-4"><a href="{{ url_for('schedule')}}" class="btn btn-outline-light w-100"><i class="bi bi-calendar3"></i> Schedule</a></h4>
@@ -52,7 +20,7 @@
                 <h4 class="text-white">Options</h4>
                 <div class="row day-secondary curved p-4">
                     <p>
-                        <a class="btn btn-warning" data-bs-toggle="collapse" href="#templateForm" role="button" aria-expanded="false" aria-controls="templateForm">Create Template</a>
+                        <a class="btn btn-success" data-bs-toggle="collapse" href="#templateForm" role="button" aria-expanded="false" aria-controls="templateForm">Create Template</a>
                     </p>
                       <div class="row">
                         <div class="col-6">

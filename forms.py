@@ -21,7 +21,7 @@ class TaskForm(FlaskForm):
 
 class EditTaskForm(FlaskForm):
   id = HiddenField('id')
-  new_title = StringField("Edited Title", validators=[DataRequired()])
+  new_title = StringField("Change Title:", validators=[DataRequired()])
   submit = SubmitField('Submit Changes')
 
 class TemplateForm(FlaskForm):

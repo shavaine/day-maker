@@ -1,41 +1,78 @@
 {% extends 'base.html' %}
 {% block title %}Tasks{% endblock %}
 {% block content %}
-    <div class="container h-100 bg-light">
-        <div class="row justify-content-center align-items-center h-25">
-            <div class="col-6 text-center">
-                <h1>{{current_user.username}}'s Tasks</h1>
+    <div class="container h-100">
+        <div class="row justify-content-center mt-4">
+            <div class="col-3 text-white  day-primary curved">
+                <h2 class="mt-2 text-center">Tasks</h2>
+                <h4 class="mt-2 text-center">{{current_user.username}}</h2>
+                <div class="row gap-1 justify-content-center">
+                  <div class="col-10">
+                    <h4 class="mt-4"><a href="{{ url_for('dashboard')}}" class="btn btn-outline-light w-100"><i class="bi bi-layout-text-window-reverse"></i> Dashboard</a></h4>
+                    <h4 class="mt-4"><a href="{{ url_for('schedule')}}" class="btn btn-outline-light w-100"><i class="bi bi-calendar3"></i> Schedule</a></h4>
+                    <h4 class="mt-4"><a href="{{ url_for('templates')}}" class="btn btn-outline-light w-100"><i class="bi bi-diagram-2"></i> Templates</a></h4>
+                    <h4 class="mt-4"><a href="{{ url_for('tasks')}}" class="btn btn-outline-light w-100"><i class="bi bi-list-task"></i> Tasks</a></h4>
+                  </div>
+                </div>
             </div>
-        </div>
-        <div class="row justify-content-center align-items-center mb-4">
-            <div class="col-5 text-center">
-                <h4>Add Tasks</h4>
-                <form action="/tasks" method="POST">
-                    {{ form.hidden_tag() }}
+            <div class="col-1"></div>
+            <div class="col-8 ">
+                <h4 class="text-white">Options</h4>
+                <div class="row day-secondary curved p-4">
                     <p>
-                        {{ form.title.label }}
-                        {{ form.title()}}
+                        <a class="btn btn-success" data-bs-toggle="collapse" href="#templateForm" role="button" aria-expanded="false" aria-controls="templateForm">Create Task</a>
                     </p>
-                    <p> {{ form.submit() }} </p>
-                </form>
-            </div>
-            <div class="col-5 text-center">
-                <h4>My Tasks</h4>
-                {% for task in current_user.tasks %}
-                <p class="fs-4">{{ task.title }}</h4>
-                <a href="{{ url_for('edit_task', task_title=task.title) }}" class="btn btn-info">Edit</a>
-                <a href="{{ url_for('delete_task', task_title=task.title) }}" class="btn btn-danger">Delete</a>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="row justify-content-center align-items-center mb-4">
-            <div class="col-6 text-center">
-                <label for="cars">My Task:</label>
-                <select name="cars" id="cars">
-                  {% for task in current_user.tasks %}
-                  <option value="{{ task.title }}">{{ task.title }}</option>
-                  {% endfor %}
-                </select>
+                      <div class="row">
+                        <div class="col-6">
+                          <div class="collapse" id="templateForm">
+                            <div class="card card-body">
+                                <form action="/tasks" method="POST">
+                                    {{ form.hidden_tag() }}
+                                    <div class="form-floating">
+                                        {{ form.title(type="input", class="form-control", id="task-create") }}
+                                        <label for="task-create">{{ form.title.label }}</label>
+                                    </div>
+                                    <p> {{ form.submit() }} </p>
+                                </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                </div>
+                <h4 class="text-white mt-4">Current Tasks</h4>
+                <div class="row ">
+                    {% for task in current_user.tasks %}
+                    <div class="col-3 mb-4">
+                        <div class="card day-secondary curved">
+                            <div class="card-body">
+                                <div class="text-center text-white card-title">{{ task.title }}</div>
+                                <p class="d-grid">
+                                    <a class="btn btn-warning" data-bs-toggle="collapse" href="#taskForm{{ task.id }}" role="button" aria-expanded="false" aria-controls="templateForm">Edit</a>
+                                    <a class="btn btn-danger mt-2" href="{{ url_for('delete_task', task_title=task.title) }}" >Delete</a>
+                                </p>
+                                  <div class="row">
+                                    <div class="col-12">
+                                      <div class="collapse" id="taskForm{{ task.id }}">
+                                        <div class="card card-body">
+                                                <form action="/edit_task/{{ task.title }}" method="POST">
+                                                    {{ EditForm.hidden_tag() }}
+                                                    <p> {{task_title}} </p>
+                                                    <div class="form-floating">
+                                                        {{ EditForm.id(value=task) }}
+                                                        {{ EditForm.new_title(type="input", class="form-control", id="task-edit") }}
+                                                        <label for="task-edit">{{ EditForm.new_title.label }}</label>
+                                                    </div>
+                                                    <p> {{ EditForm.submit() }} </p>                                
+                                                </form>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>
