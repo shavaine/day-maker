@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}Templates{% endblock %}
 {% block content %}
-    <div class="container h-100 bg-light">
+    <!-- <div class="container h-100 bg-light">
         <div class="row justify-content-center align-items-center h-25">
             <div class="col-6 text-center">
                 <h1>{{current_user.username}}'s Templates</h1>
@@ -31,6 +31,59 @@
         </div>
         <div class="row justify-content-center align-items-center">
 
+        </div>
+    </div> -->
+    <div class="container h-100">
+        <div class="row justify-content-center mt-4">
+            <div class="col-3 text-white  day-primary curved">
+                <h2 class="mt-2 text-center">Schedule</h2>
+                <h4 class="mt-2 text-center">{{current_user.username}}</h2>
+                <div class="row gap-1 justify-content-center">
+                  <div class="col-10">
+                    <h4 class="mt-4"><a href="{{ url_for('dashboard')}}" class="btn btn-outline-light w-100"><i class="bi bi-layout-text-window-reverse"></i> Dashboard</a></h4>
+                    <h4 class="mt-4"><a href="{{ url_for('schedule')}}" class="btn btn-outline-light w-100"><i class="bi bi-calendar3"></i> Schedule</a></h4>
+                    <h4 class="mt-4"><a href="{{ url_for('templates')}}" class="btn btn-outline-light w-100"><i class="bi bi-diagram-2"></i> Templates</a></h4>
+                    <h4 class="mt-4"><a href="{{ url_for('tasks')}}" class="btn btn-outline-light w-100"><i class="bi bi-list-task"></i> Tasks</a></h4>
+                  </div>
+                </div>
+            </div>
+            <div class="col-1"></div>
+            <div class="col-8 ">
+                <h4 class="text-white">Options</h4>
+                <div class="row day-secondary curved p-4">
+                    <p>
+                        <a class="btn btn-warning" data-bs-toggle="collapse" href="#templateForm" role="button" aria-expanded="false" aria-controls="templateForm">Create Template</a>
+                    </p>
+                      <div class="row">
+                        <div class="col-6">
+                          <div class="collapse" id="templateForm">
+                            <div class="card card-body">
+                                <form action="/templates" method="POST">
+                                    {{ form.hidden_tag() }}
+                                    <p>{{ form.name.label }}{{ form.name()}}</p>
+                                    <p> {{ form.submit() }} </p>
+                                </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                </div>
+                <h4 class="text-white mt-4">Current Templates</h4>
+                <div class="row ">
+                    {% for template in current_user.templates %}
+                    <div class="col-3 mb-4">
+                        <div class="card day-secondary curved">
+                            <div class="card-body">
+                                <div class="text-center text-white card-title">{{ template.name }}</div>
+                                <a href="{{ url_for('view_template', template=template.name) }}" class="btn btn-primary">View</a>
+                                <!-- <a href="{{ url_for('edit_template', template=template.name) }}" class="btn btn-info">Edit</a> -->
+                                <a href="{{ url_for('delete_template', template=template.name) }}" class="btn btn-danger">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

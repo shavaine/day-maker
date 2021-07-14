@@ -40,6 +40,12 @@ class ScheduleForm(FlaskForm):
   template = SelectField(u"Pick Template", coerce=int)
   submit = SubmitField("Create Schedule")
 
+class EditScheduleForm(FlaskForm):
+  id = HiddenField('id')
+  new_date = DateField("Select Date", validators=[DataRequired()])
+  new_template = SelectField(u"Pick Template", coerce=int)
+  submit = SubmitField("Submit Changes")
+
 class EditTodoForm(FlaskForm):
   id = HiddenField('id')
   new_notes = TextAreaField("Notes")
