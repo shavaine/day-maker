@@ -109,13 +109,16 @@ def templates():
 def view_template(template):
     current_template = Template.query.filter_by(user_id=current_user.id, name=template).first()
     todos = Todo.query.filter_by(template_id=current_template.id).all()
-    return render_template('view_template.html', template=template, todos=todos)
+    EditForm = EditTodoForm()
+    EditForm.new_task.choices = [(task.id, task.title) for task in Task.query.filter_by(user_id=current_user.id).all()]
+    AddForm = TodoForm()
+    AddForm.task.choices = [(task.id, task.title) for task in Task.query.filter_by(user_id=current_user.id).all()]
+    return render_template('view_template.html', template=template, todos=todos, AddForm=AddForm, EditTodoForm=EditForm)
 
-@app.route('/edit_template/<template>', methods=['GET', 'POST'])
+@app.route('/add_todo/<template>', methods=['POST'])
 @login_required
-def edit_template(template):
+def add_todo(template):
     current_template = Template.query.filter_by(user_id=current_user.id, name=template).first()
-    todos = Todo.query.filter_by(template_id=current_template.id).all()
     form = TodoForm()
     form.task.choices = [(task.id, task.title) for task in Task.query.filter_by(user_id=current_user.id).all()]
     if form.validate_on_submit():
@@ -123,8 +126,7 @@ def edit_template(template):
       db.session.add(todo)
       db.session.commit()
       flash('Todo successfully added')
-      return redirect(url_for('edit_template', template=template))
-    return render_template('edit_template.html', template=current_template, form=form, todos=todos)
+      return redirect(url_for('view_template', template=template))
 
 @app.route('/delete_template/<template>')
 @login_required
@@ -135,12 +137,11 @@ def delete_template(template):
     flash('Template successfully deleted')
     return redirect(url_for('templates'))
 
-@app.route('/edit_todo/<template>/<todo>/<todo_id>', methods=['GET', 'POST'])
+@app.route('/edit_todo/<template>/<todo_id>', methods=['POST'])
 @login_required
-def edit_todo(todo, template, todo_id):
+def edit_todo( template, todo_id):
     current_template = Template.query.filter_by(user_id=current_user.id, name=template).first()
-    old = Todo.query.filter_by(id=todo_id, template_id=current_template.id).first()
-    form = EditTodoForm(obj=old, new_notes=old.notes, new_start_time=old.start_time, new_end_time=old.end_time, new_task=old.task_id)
+    form = EditTodoForm()
     form.new_task.choices = [(task.id, task.title) for task in Task.query.filter_by(user_id=current_user.id).all()]
     if form.validate_on_submit():
       todo = Todo.query.filter_by(id=todo_id, template_id=current_template.id).first()
@@ -150,8 +151,10 @@ def edit_todo(todo, template, todo_id):
       todo.task_id = form.new_task.data
       db.session.commit()
       flash('Todo successfully updated')
-      return redirect(url_for('view_template', template=current_template.name))
-    return render_template('edit_todo.html', todo=todo, todo_id=todo_id, template=template, form=form)
+      return redirect(url_for('view_template', template=current_template.name,))
+    else:
+      flash(form.errors)
+      return redirect(url_for('view_template', template=template))
 
 @app.route('/create_schedule', methods=['POST'])
 @login_required
@@ -195,9 +198,6 @@ def schedule():
     form.template.choices = [(template.id, template.name) for template in Template.query.filter_by(user_id=current_user.id).all()]
     schedule = Schedule.query.filter_by(date=datetime.today().strftime("%Y-%m-%d"), user_id=current_user.id).first()
     if schedule is None:
-      # flash('No Schedule set for today')
-      # return redirect(url_for('dashboard'))
-      # current_template = Template.query.filter_by(id=schedule.template_id).first()
       todos = []
       schedule = Schedule(date=datetime.today().strftime("%Y-%m-%d"), template_id=1, user_id=current_user.id, id=1)
       schedules_list = []

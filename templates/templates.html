@@ -41,11 +41,9 @@
                     {% for template in current_user.templates %}
                     <div class="col-3 mb-4">
                         <div class="card day-secondary curved">
-                            <div class="card-body">
+                            <div class="card-body d-grid">
                                 <div class="text-center text-white card-title">{{ template.name }}</div>
-                                <a href="{{ url_for('view_template', template=template.name) }}" class="btn btn-primary">View</a>
-                                <!-- <a href="{{ url_for('edit_template', template=template.name) }}" class="btn btn-info">Edit</a> -->
-                                <a href="{{ url_for('delete_template', template=template.name) }}" class="btn btn-danger">Delete</a>
+                                <a href="{{ url_for('view_template', template=template.name) }}" class="btn btn-primary stretched-link">View</a>
                             </div>
                         </div>
                     </div>

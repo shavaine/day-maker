@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}{{ template }}{% endblock %}
 {% block content %}
-    <div class="container h-100 bg-light">
+    <!-- <div class="container h-100 bg-light">
         <div class="row justify-content-center align-items-center h-25">
             <div class="col-6 text-center">
                 <h1>{{ template }}</h1>
@@ -13,6 +13,114 @@
                 {% for todo in todos|sort(attribute='start_time') %}
                 <p class="fs-4">{{ todo.task.title }}: {{ todo.start_time.strftime("%H:%M") }} - {{ todo.end_time.strftime("%H:%M") }} </h4>  
                 {% endfor %}
+            </div>
+        </div>
+    </div> -->
+    <div class="container h-100">
+        <div class="row justify-content-center mt-4">
+            <div class="col-3 text-white  day-primary curved">
+                <h2 class="mt-2 text-center">Templates</h2>
+                <h4 class="mt-2 text-center">{{current_user.username}}</h2>
+                <div class="row gap-1 justify-content-center pb-4">
+                  <div class="col-10">
+                    <h4 class="mt-4"><a href="{{ url_for('dashboard')}}" class="btn btn-outline-light w-100"><i class="bi bi-layout-text-window-reverse"></i> Dashboard</a></h4>
+                    <h4 class="mt-4"><a href="{{ url_for('schedule')}}" class="btn btn-outline-light w-100"><i class="bi bi-calendar3"></i> Schedule</a></h4>
+                    <h4 class="mt-4"><a href="{{ url_for('templates')}}" class="btn btn-outline-light w-100"><i class="bi bi-diagram-2"></i> Templates</a></h4>
+                    <h4 class="mt-4"><a href="{{ url_for('tasks')}}" class="btn btn-outline-light w-100"><i class="bi bi-list-task"></i> Tasks</a></h4>
+                  </div>
+                </div>
+            </div>
+            <div class="col-1"></div>
+            <div class="col-8 ">
+                <h4 class="text-white">Options</h4>
+                <div class="row day-secondary curved p-4">
+                    <div>
+                        <a class="btn btn-success" data-bs-toggle="collapse" href="#templateForm" role="button" aria-expanded="false" aria-controls="templateForm">Add Todo</a>
+                        <a href="{{ url_for('delete_template', template=template) }}" class="btn btn-danger">Delete Template</a>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="collapse" id="templateForm">
+                                <div class="card card-body">
+                                    <form action="/add_todo/{{template}}" method="POST">
+                                    {{ AddForm.hidden_tag() }}
+                                    <p>
+                                        {{ AddForm.task.label }}
+                                        {{ AddForm.task()}}
+                                    </p>
+                                    <p>
+                                        {{ AddForm.start_time.label }}
+                                        {{ AddForm.start_time()}}
+                                    </p>
+                                    <p>
+                                        {{ AddForm.end_time.label }}
+                                        {{ AddForm.end_time()}}
+                                    </p>
+                                    <p>
+                                        {{ AddForm.notes.label }}
+                                        {{ AddForm.notes()}}
+                                    </p>
+                                    <p> {{ AddForm.submit() }} </p>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h4 class="text-white mt-4">{{ template }}</h4>
+                <div class="row">
+                    <div class="col-12">
+                        {% for todo in todos|sort(attribute='start_time') %}
+                        <div class="row day-secondary my-2 py-2 curved">
+                            <!-- <div class="col-12 day-secondary my-2 curved"> -->
+                                <div class="col fs-4 text-white ">
+                                    <div>{{ todo.start_time.strftime("%H:%M") }} - {{ todo.end_time.strftime("%H:%M") }} : {{ todo.task.title }}</div>
+                                </div>
+                                <div class="col text-end">
+                                    <div class="btn btn-primary" data-bs-toggle="collapse" href="#notes{{ todo.id }}" role="button" aria-expanded="false" aria-controls="notes">Notes</div>
+                                    <div class="btn btn-info" data-bs-toggle="collapse" href="#edit{{ todo.id }}" role="button" aria-expanded="false" aria-controls="edit">Edit</div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-12">
+                                        <div class="collapse" id="notes{{ todo.id }}">
+                                            <p class="text-white">{{ todo.notes}}</p>
+                                        </div>
+                                    </div>
+                                </div>  
+                                <div class="row mt-2">
+                                    <div class="col-6">
+                                        <div class="collapse" id="edit{{ todo.id }}">
+                                            <div class="card card-body">
+                                                <form id="editForm" class="form-floating" action="/edit_todo/{{template}}/{{todo.id}}" method="POST">
+                                                    {{ EditTodoForm.hidden_tag() }}
+                                                    <p>
+                                                        {{ EditTodoForm.id(value=todo) }}
+                                                        <label class="form-label">{{ EditTodoForm.new_task.label }}</label>
+                                                        {{ EditTodoForm.new_task(type="select", class="form-control") }}
+                                                    </p>
+                                                    <p>
+                                                        <label class="form-label">{{ EditTodoForm.new_start_time.label }}</label>
+                                                        {{ EditTodoForm.new_start_time(value=todo.start_time.strftime("%H:%M"), type="time", class="form-control") }}
+                                                    </p>
+                                                    <p>
+                                                        <label class="form-label">{{ EditTodoForm.new_end_time.label }}</label>
+                                                        {{ EditTodoForm.new_end_time(value=todo.end_time.strftime("%H:%M"), type="time", class="form-control") }}
+                                                    </p>
+                                                    <p>
+                                                        <label class="form-label">{{ EditTodoForm.new_notes.label }}</label>
+                                                        <textarea class="form-control" id="new_notes" name="new_notes" type="text">{{ todo.notes }}</textarea>
+                                                    </p>
+                                                    <p> {{ EditTodoForm.submit(class="btn btn-secondary") }} </p>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>  
+                            <!-- </div> -->
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
