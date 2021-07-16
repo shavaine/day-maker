@@ -54,27 +54,26 @@
                 <h4 class="text-white">Options</h4>
                 <div class="row day-secondary curved p-4">
                     <p>
-                        <a class="btn btn-success" data-bs-toggle="collapse" href="#templateForm" role="button" aria-expanded="false" aria-controls="templateForm">Create Schedule</a>
-                        {% if deletable %}
-                        <a class="btn btn-danger" href="{{ url_for('delete_schedule', schedule=schedule) }}">Delete Schedule</a>
+                        {% if not deletable %}
+                        <a class="btn btn-success" data-bs-toggle="collapse" href="#templateForm" role="button" aria-expanded="false" aria-controls="templateForm">Add Template for Today</a>
                         {% endif%}
-                        <!-- <a class="btn btn-danger" href="{{ url_for('delete_schedule', schedule=schedule) }}">Delete Schedule</a> -->
+                        {% if deletable %}
+                        <a class="btn btn-secondary" href="{{ url_for('view_template', template=template) }}">View Current Template</a>
+                        <a class="btn btn-danger" href="{{ url_for('delete_schedule', schedule=schedule, dest=dest) }}">Delete Schedule</a>
+                        {% endif%}
                     </p>
                       <div class="row">
                         <div class="col-6">
                           <div class="collapse" id="templateForm">
                             <div class="card card-body">
-                                <form action="/create_schedule" method="POST">
+                                <form action="/create_schedule/schedule" method="POST">
                                     {{ form.hidden_tag() }}
-                                    <p>
-                                        {{ form.date.label }}
-                                        {{ form.date()}}
-                                    </p>
-                                    <p>
-                                        {{ form.template.label }}
-                                        {{ form.template()}}
-                                    </p>
-                                    <p> {{ form.submit() }} </p>
+
+                                    <div class="form-floating mb-3">
+                                      {{ form.template(type="date", class="form-control") }}
+                                      <label class="form-label">{{ form.template.label }}</label>
+                                    </div>
+                                    <p> {{ form.submit(class="btn btn-secondary") }} </p>
                                 </form>
                             </div>
                           </div>

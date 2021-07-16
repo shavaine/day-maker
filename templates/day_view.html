@@ -63,26 +63,26 @@
               <div class="row day-secondary curved p-4">
                 
                   <p>
-                    <a class="btn btn-warning" data-bs-toggle="collapse" href="#templateForm" role="button" aria-expanded="false" aria-controls="templateForm">Change Template</a>
-                    <a class="btn btn-danger" href="{{ url_for('delete_schedule', schedule=schedule) }}">Delete Schedule</a><
+                    <a class="btn btn-warning" data-bs-toggle="collapse" href="#templateForm" role="button" aria-expanded="false" aria-controls="templateForm">Edit Schedule</a>
+                    <a class="btn btn-danger" href="{{ url_for('delete_schedule', schedule=schedule, dest=dashboard) }}">Delete Schedule</a><
                   </p>
                   <div class="row">
                     <div class="col-6">
                       <div class="collapse" id="templateForm">
                         <div class="card card-body">
-                          <form action="/edit_schedule/{{schedule}}" method="POST">
-                            {{ form.hidden_tag() }}
-                            <p>
-                                {{ form.id(value=schedule) }}
-                                {{ form.new_date.label }}
-                                {{ form.new_date()}}
-                            </p>
-                            <p>
-                                {{ form.new_template.label }}
-                                {{ form.new_template()}}
-                            </p>
-                            <p> {{ form.submit() }} </p>
-                        </form>
+                        <form action="/edit_schedule/{{schedule}}" method="POST">
+                          {{ form.hidden_tag() }}
+                          {{ form.id(value=schedule) }}
+                          <div class="form-floating mb-3">
+                            {{ form.new_date(value=date, type="date", class="form-control") }}
+                            <label class="form-label">{{ form.new_date.label }}</label>
+                          </div>
+                          <div class="form-floating mb-3">
+                            {{ form.new_template(type="date", class="form-control") }}
+                            <label class="form-label">{{ form.new_template.label }}</label>
+                          </div>
+                          <p> {{ form.submit(class="btn btn-secondary") }} </p>
+                      </form>
                         </div>
                       </div>
                     </div>
@@ -90,7 +90,7 @@
                 
 
               </div>
-              <h4 class="text-white mt-4">Selected Schedule</h4>
+              <h4 class="text-white mt-4">{{ template }}</h4>
               <div class="row day-secondary curved pb-4">
                   <div class=" text-white" id='calendar'></div>
               </div>

@@ -36,31 +36,46 @@
                 <div class="row day-secondary curved p-4">
                     <div>
                         <a class="btn btn-success" data-bs-toggle="collapse" href="#templateForm" role="button" aria-expanded="false" aria-controls="templateForm">Add Todo</a>
+                        <a class="btn btn-secondary" data-bs-toggle="collapse" href="#taskForm" role="button" aria-expanded="false" aria-controls="templateForm">Create Task</a>
                         <a href="{{ url_for('delete_template', template=template) }}" class="btn btn-danger">Delete Template</a>
                     </div>
-                    <div class="row">
+                    <div class="row mt-2">
                         <div class="col-6">
                             <div class="collapse" id="templateForm">
                                 <div class="card card-body">
                                     <form action="/add_todo/{{template}}" method="POST">
                                     {{ AddForm.hidden_tag() }}
-                                    <p>
-                                        {{ AddForm.task.label }}
-                                        {{ AddForm.task()}}
-                                    </p>
-                                    <p>
-                                        {{ AddForm.start_time.label }}
-                                        {{ AddForm.start_time()}}
-                                    </p>
-                                    <p>
-                                        {{ AddForm.end_time.label }}
-                                        {{ AddForm.end_time()}}
-                                    </p>
-                                    <p>
-                                        {{ AddForm.notes.label }}
-                                        {{ AddForm.notes()}}
-                                    </p>
-                                    <p> {{ AddForm.submit() }} </p>
+                                    <div class="form-floating mb-3">
+                                        {{ AddForm.task(type="select", class="form-control", id="add-task") }}
+                                        <label for="add-task">{{ AddForm.task.label }}</label>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        {{ AddForm.start_time(type="time", class="form-control", id="start_time") }}
+                                        <label for="start_time">{{ AddForm.start_time.label }}</label>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        {{ AddForm.end_time(type="time", class="form-control", id="end_time") }}
+                                        <label for="end_time">{{ AddForm.end_time.label }}</label>
+                                    </div>
+                                    <div class="form-floating mb-3">
+                                        {{ AddForm.notes(type="text", class="form-control", id="notes") }}
+                                        <label for="notes">{{ AddForm.notes.label }}</label>
+                                    </div>
+                                    <p> {{ AddForm.submit(class="btn btn-secondary") }} </p>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="collapse" id="taskForm">
+                                <div class="card card-body">
+                                    <form action="/{{template}}/create_task" method="POST">
+                                        {{ AddTaskForm.hidden_tag() }}
+                                        <div class="form-floating mb-3">
+                                            {{ AddTaskForm.title(type="input", class="form-control", id="task-create") }}
+                                            <label for="task-create">{{ AddTaskForm.title.label }}</label>
+                                        </div>
+                                        <p> {{ AddTaskForm.submit(class="btn btn-secondary") }} </p>
                                     </form>
                                 </div>
                             </div>
@@ -93,23 +108,23 @@
                                             <div class="card card-body">
                                                 <form id="editForm" class="form-floating" action="/edit_todo/{{template}}/{{todo.id}}" method="POST">
                                                     {{ EditTodoForm.hidden_tag() }}
-                                                    <p>
+                                                    <div class="form-floating mb-3">
                                                         {{ EditTodoForm.id(value=todo) }}
-                                                        <label class="form-label">{{ EditTodoForm.new_task.label }}</label>
                                                         {{ EditTodoForm.new_task(type="select", class="form-control") }}
-                                                    </p>
-                                                    <p>
-                                                        <label class="form-label">{{ EditTodoForm.new_start_time.label }}</label>
+                                                        <label class="form-label">{{ EditTodoForm.new_task.label }}</label>
+                                                    </div>
+                                                    <div class="form-floating mb-3">
                                                         {{ EditTodoForm.new_start_time(value=todo.start_time.strftime("%H:%M"), type="time", class="form-control") }}
-                                                    </p>
-                                                    <p>
-                                                        <label class="form-label">{{ EditTodoForm.new_end_time.label }}</label>
+                                                        <label class="form-label">{{ EditTodoForm.new_start_time.label }}</label>
+                                                    </div>
+                                                    <div class="form-floating mb-3">
                                                         {{ EditTodoForm.new_end_time(value=todo.end_time.strftime("%H:%M"), type="time", class="form-control") }}
-                                                    </p>
-                                                    <p>
-                                                        <label class="form-label">{{ EditTodoForm.new_notes.label }}</label>
+                                                        <label class="form-label">{{ EditTodoForm.new_end_time.label }}</label>
+                                                    </div>
+                                                    <div class="form-floating mb-3">
                                                         <textarea class="form-control" id="new_notes" name="new_notes" type="text">{{ todo.notes }}</textarea>
-                                                    </p>
+                                                        <label class="form-label">{{ EditTodoForm.new_notes.label }}</label>
+                                                    </div>
                                                     <p> {{ EditTodoForm.submit(class="btn btn-secondary") }} </p>
                                                 </form>
                                             </div>

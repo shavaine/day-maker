@@ -48,9 +48,41 @@
                 </div>
             </div>
             <div class="col-1"></div>
-            <div class="col-8 day-secondary curved">
-              <div class="m-4" id='calendar'></div>
-          </div>
+            <div class="col-8">
+              <h4 class="text-white">Options</h4>
+              <div class="row day-secondary curved p-4">
+                  <p>
+                      <a class="btn btn-success" data-bs-toggle="collapse" href="#templateForm" role="button" aria-expanded="false" aria-controls="templateForm">Create Schedule</a>
+                      {% if deletable %}
+                      <a class="btn btn-danger" href="{{ url_for('delete_schedule', schedule=schedule) }}">Delete Schedule</a>
+                      {% endif%}
+                  </p>
+                    <div class="row">
+                      <div class="col-6">
+                        <div class="collapse" id="templateForm">
+                          <div class="card card-body">
+                            <form action="/create_schedule/dashboard" method="POST">
+                              {{ form.hidden_tag() }}
+                              <div class="form-floating mb-3">
+                                {{ form.date(type="date", class="form-control") }}
+                                <label class="form-label">{{ form.date.label }}</label>
+                              </div>
+                              <div class="form-floating mb-3">
+                                {{ form.template(type="date", class="form-control") }}
+                                <label class="form-label">{{ form.template.label }}</label>
+                              </div>
+                              <p> {{ form.submit(class="btn btn-secondary") }} </p>
+                          </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+              </div>
+              <h4 class="text-white mt-4">Calendar</h4>
+              <div class="row day-secondary curved py-4">
+                  <div class=" text-white" id='calendar'></div>
+              </div>
+            </div>
         </div>
     </div>
 {% endblock %}
