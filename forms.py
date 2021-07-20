@@ -23,7 +23,7 @@ class TaskForm(FlaskForm):
 class EditTaskForm(FlaskForm):
   id = HiddenField('id')
   new_title = StringField("Change Title:", validators=[DataRequired()])
-  submit = SubmitField('Submit Changes')
+  submit = SubmitField('Submit')
 
 class TemplateForm(FlaskForm):
   name = StringField("Template Name", validators=[DataRequired()])
@@ -43,7 +43,7 @@ class ScheduleForm(FlaskForm):
 
 class EditScheduleForm(FlaskForm):
   id = HiddenField('id')
-  new_date = DateField("Select Date", validators=[DataRequired()])
+  new_date = DateField("Select Date", validators=[DataRequired()], format='%Y-%m-%d', default=datetime.now())
   new_template = SelectField(u"Pick Template", coerce=int)
   submit = SubmitField("Submit Changes")
 

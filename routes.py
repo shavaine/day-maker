@@ -58,7 +58,7 @@ def dashboard():
     form.template.choices = [(template.id, template.name) for template in Template.query.filter_by(user_id=current_user.id).all()]
     schedules = Schedule.query.filter_by(user_id=current_user.id).all()
     schedules_list = [{'title': Template.query.filter_by(id=schedule.template_id).first().name, 'start': str(schedule.date), 'url': url_for('day_view', schedule=schedule.id, template=Template.query.filter_by(id=schedule.template_id).first().name)} for schedule in schedules]
-    return render_template('calendar.html', date=datetime.today(), schedules=json.dumps([schedule for schedule in schedules_list]), form=form)
+    return render_template('calendar.html', date=datetime.today(), schedules=json.dumps([schedule for schedule in schedules_list]), form=form, templateForm=TemplateForm())
 
 @app.route('/tasks', methods=['GET', 'POST'])
 @login_required
@@ -115,6 +115,18 @@ def templates():
       db.session.commit()
       flash('Template successfully added')
       return redirect(url_for('templates'))
+    return render_template('templates.html', form=form)
+
+@app.route('/create_template', methods=['POST'])
+@login_required
+def create_template():
+    form = TemplateForm()
+    if form.validate_on_submit():
+      template = Template(name=form.name.data, user_id=current_user.id)
+      db.session.add(template)
+      db.session.commit()
+      flash('Template successfully created')
+      return redirect(url_for('dashboard'))
     return render_template('templates.html', form=form)
 
 @app.route('/view_template/<template>')
@@ -182,9 +194,10 @@ def create_schedule(dest):
       flash('Schedule successfully created')
       return redirect(url_for(destination))
 
-@app.route('/edit_schedule/<schedule>', methods=['POST'])
+@app.route('/edit_schedule/<schedule>/<dest>', methods=['POST'])
 @login_required
-def edit_schedule(schedule):
+def edit_schedule(schedule, dest):
+    destination = dest
     form = EditScheduleForm()
     form.new_template.choices = [(template.id, template.name) for template in Template.query.filter_by(user_id=current_user.id).all()]
     if form.validate_on_submit():
@@ -193,7 +206,10 @@ def edit_schedule(schedule):
       schedule.template_id = form.new_template.data
       db.session.commit()
       flash('Schedule successfully changed')
-      return redirect(url_for('dashboard'))
+      return redirect(url_for(destination))
+    else:
+      flash(form.errors)
+      return redirect(url_for(destination))
 
 
 @app.route('/delete_schedule/<schedule>/<dest>')
@@ -211,6 +227,8 @@ def delete_schedule(schedule, dest):
 def schedule():
     form = ScheduleForm()
     form.template.choices = [(template.id, template.name) for template in Template.query.filter_by(user_id=current_user.id).all()]
+    EditForm = EditScheduleForm()
+    EditForm.new_template.choices = [(template.id, template.name) for template in Template.query.filter_by(user_id=current_user.id).all()]
     schedule = Schedule.query.filter_by(date=datetime.today().strftime("%Y-%m-%d"), user_id=current_user.id).first()
     if schedule is None:
       todos = []
@@ -223,7 +241,7 @@ def schedule():
       current_template = Template.query.filter_by(id=schedule.template_id).first()
       todos = Todo.query.filter_by(template_id=schedule.template_id).all()
       schedules_list = [{'title': todo.task.title, 'start': str(schedule.date)+'T'+str(todo.start_time), 'end': str(schedule.date)+'T'+str(todo.end_time), 'url': url_for('day_view', schedule=schedule.id, template=Template.query.filter_by(id=schedule.template_id).first().name)} for todo in todos]
-    return render_template('todays_schedule.html', date=schedule.date, schedules=json.dumps([schedule for schedule in schedules_list]), todos=todos, form=form, schedule=schedule.id, deletable=deletable, template=current_template.name, dest='schedule')
+    return render_template('schedule.html', date=schedule.date, schedules=json.dumps([schedule for schedule in schedules_list]), todos=todos, form=form, schedule=schedule.id, deletable=deletable, template=current_template.name, EditForm=EditForm, dest='schedule')
 
 @app.route('/day_view/<schedule>')
 @login_required
@@ -234,4 +252,4 @@ def day_view(schedule):
     current_template = Template.query.filter_by(user_id=current_user.id, id=current_schedule.template_id).first()
     todos = Todo.query.filter_by(template_id=current_schedule.template_id).all()
     schedules_list = [{'title': todo.task.title, 'start': str(current_schedule.date)+'T'+str(todo.start_time), 'end': str(current_schedule.date)+'T'+str(todo.end_time), 'url': url_for('day_view', schedule=current_schedule.id, template=Template.query.filter_by(id=current_schedule.template_id).first().name)} for todo in todos]
-    return render_template('day_view.html', date=current_schedule.date, schedules=json.dumps([schedule for schedule in schedules_list]), todos=todos, form=form, schedule=current_schedule.id, template=current_template.name)
+    return render_template('day_view.html', date=current_schedule.date, schedules=json.dumps([schedule for schedule in schedules_list]), todos=todos, form=form, schedule=current_schedule.id, template=current_template.name, dest='dashboard')

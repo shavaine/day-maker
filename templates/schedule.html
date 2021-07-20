@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block head %}
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+<link rel="stylesheet" href="../static/styles.css">
+<link href='../static/lib/main.css' rel='stylesheet' />
+<script src='../static/lib/main.js'></script>
+<script>
+  var events = {{ schedules|safe }}
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      headerToolbar: {
+        left: '',
+        center:'title',
+        right: ''
+      },
+      initialView: 'listDay',
+      initialDate: '{{date}}',
+      editable: true,
+      businessHours: true,
+      dayMaxEvents: true,
+      events: events
+    });
+
+    calendar.render();
+  });
+
+</script>
+{% endblock %}
+{% block content %}
+    <div class="container h-100">
+      <div class="row justify-content-between mt-4">
+        <div class="d-none d-lg-block col-md-3 col-lg-3 text-white day-primary curved">
+            <h2 class="mt-2 text-center">Dashboard</h2>
+            <h4 class="mt-2 text-center">{{current_user.username}}</h2>
+            <div class="row gap-1 justify-content-center">
+              <div class="col-10">
+                <h4 class="mt-4"><a href="{{ url_for('dashboard')}}" class="btn btn-outline-light w-100"><i class="bi bi-layout-text-window-reverse"></i> Dashboard</a></h4>
+                <h4 class="mt-4"><a href="{{ url_for('schedule')}}" class="btn btn-outline-light active w-100"><i class="bi bi-calendar3"></i> Schedule</a></h4>
+                <h4 class="mt-4"><a href="{{ url_for('templates')}}" class="btn btn-outline-light w-100"><i class="bi bi-diagram-2"></i> Templates</a></h4>
+                <h4 class="mt-4"><a href="{{ url_for('tasks')}}" class="btn btn-outline-light w-100"><i class="bi bi-list-task"></i> Tasks</a></h4>
+              </div>
+            </div>
+        </div>
+        <div class="col-md-12 col-lg-8">
+                <h4 class="text-white">Options</h4>
+                {% if not deletable %}
+                <div class="row day-secondary curved p-2 justify-content-start">
+                {% endif%}
+                {% if deletable %}
+                <div class="row day-secondary curved p-2 justify-content-around">
+                {% endif%}
+                      {% if not deletable %}
+                        <a class="btn btn-success col-10 col-md-3 ms-md-2" data-bs-toggle="collapse" href="#addForm" role="button" aria-expanded="false" aria-controls="addForm">Add Template for Today</a>
+                      {% endif%}
+                      {% if deletable %}
+                        <a class="btn btn-warning col-10 col-md-3 mb-2 mb-sm-0" data-bs-toggle="collapse" href="#editForm" role="button" aria-expanded="false" aria-controls="editForm">Edit Schedule</a>
+                        <a class="btn btn-secondary col-10 col-md-4 mb-2 mb-sm-0" href="{{ url_for('view_template', template=template) }}">View Current Template</a>
+                        <a class="btn btn-danger col-10 col-md-4" href="{{ url_for('delete_schedule', schedule=schedule, dest=dest) }}">Delete Schedule</a>
+                      {% endif%}
+                      <div class="row justify-content-around">
+                        <div class="col-10">
+                          <div class="collapse" id="addForm">
+                            <div class="card card-body mt-3">
+                                <form action="/create_schedule/schedule" method="POST">
+                                    {{ form.hidden_tag() }}
+                                    <div class="form-floating mb-3">
+                                      {{ form.template(type="date", class="form-control") }}
+                                      <label class="form-label">{{ form.template.label }}</label>
+                                    </div>
+                                    <p> {{ form.submit(class="btn btn-secondary") }} </p>
+                                </form>
+                            </div>
+                          </div>
+                          <div class="collapse" id="editForm">
+                            <div class="card card-body mt-3">
+                            <form action="/edit_schedule/{{schedule}}/{{dest}}" method="POST">
+                              {{ EditForm.hidden_tag() }}
+                              {{ EditForm.id(value=schedule) }}
+
+                              <div class="form-floating mb-3">
+                                {{ EditForm.new_template(type="date", class="form-control") }}
+                                <label class="form-label">{{ EditForm.new_template.label }}</label>
+                              </div>
+                              <p> {{ EditForm.submit(class="btn btn-secondary") }} </p>
+                            </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                </div>
+                <h4 class="text-white mt-4">Today's Schedule</h4>
+                <div class="row day-secondary curved pb-4">
+                    <div class=" text-white" id='calendar'></div>
+                </div>
+          </div>
+      </div>
+      <div class="row d-lg-none justify-content-center text-center day-primary mt-3 fixed-bottom">
+        <a class="col-3 text-white btn" href="{{ url_for('dashboard')}}"><i class="bi bi-layout-text-window-reverse"></i><br/>Dash</a>
+        <a class="col-3 day-secondary text-black btn" href="{{ url_for('schedule')}}"><i class="bi bi-calendar3"></i><br/>Schedule</a>
+        <a class="col-3 text-white btn" href="{{ url_for('templates')}}"><i class="bi bi-diagram-2"></i><br/>Template</a>
+        <a class="col-3 text-white btn" href="{{ url_for('tasks')}}"><i class="bi bi-list-task"></i><br/>Tasks</a>
+      </div>
+    </div>
+{% endblock %}

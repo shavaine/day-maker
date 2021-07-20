@@ -14,20 +14,19 @@
 <body >
   <header class="container pt-3">
     <div class="row">
-      <div class="col-3 text-center">
+      <div class="col-7 col-lg-3 text-lg-center">
         <a href="{{url_for('home')}}">
           <i class="bi bi-calendar-event-fill text-white fs-3"></i>
           <span class="fs-3 ms-2 text-white">Day Maker</span>
         </a>
       </div>
-      <div class="col-9 pe-0">
+      <div class="col-5 col-lg-9 pe-0">
           <div class="ms-auto text-white text-end">
             {% if not current_user.is_authenticated %}
             <span class="btn btn-primary"><a class="text-white" href="{{url_for('register')}}">Register</a></span>
             <span class="btn btn-primary"><a class="text-white" href="{{url_for('login')}}">Login</a></span>
             {% endif %}
             {% if current_user.is_authenticated %}
-            <span class="btn btn-primary"><a class="text-white" href="{{url_for('dashboard')}}">Dashboard</a></span>
             <span class="btn btn-primary"><a class="text-white" href="{{url_for('logout')}}">Logout</a></span>
             {% endif %}
           </div>
