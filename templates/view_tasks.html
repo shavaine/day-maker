@@ -20,12 +20,12 @@
                 <div class="row day-secondary curved p-2 justify-content-around justify-content-md-start">
                       <a class="btn btn-success col-10 col-md-3 ms-md-2" data-bs-toggle="collapse" href="#taskForm" role="button" aria-expanded="false" aria-controls="taskForm">Create Task</a>
                       <div class="row justify-content-around">
-                        <div class="col-10">
+                        <div class="col-12 col-md-10">
                           <div class="collapse" id="taskForm">
                             <div class="card card-body mt-3">
                                 <form action="/tasks" method="POST">
                                     {{ form.hidden_tag() }}
-                                    <div class="form-floating">
+                                    <div class="form-floating mb-3">
                                         {{ form.title(type="input", class="form-control", id="task-create") }}
                                         <label for="task-create">{{ form.title.label }}</label>
                                     </div>
@@ -54,12 +54,12 @@
                                                 <form action="/edit_task/{{ task.title }}" method="POST">
                                                     {{ EditForm.hidden_tag() }}
                                                     <p> {{task_title}} </p>
-                                                    <div class="form-floating">
+                                                    <div class="form-floating mb-3">
                                                         {{ EditForm.id(value=task) }}
-                                                        {{ EditForm.new_title(type="input", class="form-control", id="task-edit") }}
+                                                        {{ EditForm.new_title(type="text", class="form-control", id="task-edit") }}
                                                         <label class="d-none d-xl-block" for="task-edit">{{ EditForm.new_title.label }}</label>
                                                     </div>
-                                                    {{ EditForm.submit(class="btn btn-secondary") }}                                
+                                                    <p>{{ EditForm.submit(class="btn btn-secondary")}}</p>                              
                                                 </form>
                                         </div>
                                       </div>

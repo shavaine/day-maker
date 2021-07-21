@@ -76,8 +76,11 @@
                           <div class="card card-body mt-3">
                             <form action="/create_template" method="POST">
                               {{ templateForm.hidden_tag() }}
-                              <p>{{ templateForm.name.label }}{{ templateForm.name()}}</p>
-                              <p> {{ templateForm.submit() }} </p>
+                              <div class="form-floating mb-3">
+                                {{  templateForm.name(type="text", class="form-control") }}
+                                <label class="form-label">{{ templateForm.name.label }}</label>
+                              </div>
+                              <p> {{ templateForm.submit(class="btn btn-secondary") }} </p>
                             </form>
                           </div>
                         </div>

@@ -51,7 +51,7 @@
         <div class="col-md-12 col-lg-8">
                 <h4 class="text-white">Options</h4>
                 {% if not deletable %}
-                <div class="row day-secondary curved p-2 justify-content-start">
+                <div class="row day-secondary curved p-2 justify-content-center justify-content-md-start">
                 {% endif%}
                 {% if deletable %}
                 <div class="row day-secondary curved p-2 justify-content-around">
@@ -65,7 +65,7 @@
                         <a class="btn btn-danger col-10 col-md-4" href="{{ url_for('delete_schedule', schedule=schedule, dest=dest) }}">Delete Schedule</a>
                       {% endif%}
                       <div class="row justify-content-around">
-                        <div class="col-10">
+                        <div class="col-12 col-md-10">
                           <div class="collapse" id="addForm">
                             <div class="card card-body mt-3">
                                 <form action="/create_schedule/schedule" method="POST">
