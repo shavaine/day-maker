@@ -37,16 +37,36 @@ def login():
       return redirect(next_page)
     return render_template('login.html', LoginForm=form)
 
+def create_defaults(username):
+      user = User.query.filter_by(username=username).first()
+      default_task1 = Task(title='Exercise', user_id=user.id)
+      default_task2 = Task(title='Eat', user_id=user.id)
+      default_task3 = Task(title='Read', user_id=user.id)
+      default_task4 = Task(title='Work', user_id=user.id)
+      default_task5 = Task(title='Sleep', user_id=user.id)
+      default_task6 = Task(title='Shower', user_id=user.id)
+      db.session.add(default_task1)
+      db.session.add(default_task2)
+      db.session.add(default_task3)
+      db.session.add(default_task4)
+      db.session.add(default_task5)
+      db.session.add(default_task6)
+      db.session.commit()
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
       return redirect(url_for('dashboard'))
     form = RegisterForm()
     if form.validate_on_submit():
+      exists = User.query.filter_by(username=form.username.data).first()
+      if exists:
+        flash('A User with that username already exists')
+        return redirect(url_for('register'))
       new_user = User(username=form.username.data, email=form.email.data)
       new_user.set_password(form.password.data)
       db.session.add(new_user)
-      db.session.commit()
+      create_defaults(new_user.username)
       flash('Registration successful!')
       return redirect(url_for('login'))
     return render_template('register.html', RegisterForm=form)
@@ -147,6 +167,9 @@ def add_todo(template):
     form = TodoForm()
     form.task.choices = [(task.id, task.title) for task in Task.query.filter_by(user_id=current_user.id).all()]
     if form.validate_on_submit():
+      if form.start_time.data >= form.end_time.data:
+        flash('End Time can not be lower or equal to Start Time.')
+        return redirect(url_for('view_template', template=template))
       todo = Todo(notes=form.notes.data, start_time=form.start_time.data, end_time=form.end_time.data, task_id=form.task.data, template_id=current_template.id)
       db.session.add(todo)
       db.session.commit()
